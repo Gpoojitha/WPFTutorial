@@ -1,0 +1,3 @@
+List<TestData>()  List1 = new List<TestData>();
+System.Collections.IList w = (System.Collections.IList)dgtest.SelectedItems;
+List1 = w.Cast<TestData>().ToList();
