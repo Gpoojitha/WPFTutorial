@@ -1,0 +1,63 @@
+How to use:
+
+ConversionHelper con = new ConversionHelper();
+DataTable dtstorage = new DataTable();
+dt = con.ToDataTable(data.ToList<dummyclass>());
+db.BulkInsert(dtstorage);
+
+
+Conversion helper:
+
+public class ConversionHelper
+        {
+            public DataTable ToDataTable<T>(List<T> data)
+            {
+                try
+                {
+                    PropertyDescriptorCollection props =
+        TypeDescriptor.GetProperties(typeof(T));
+                    DataTable table = new DataTable();
+                    for (int i = 0; i < props.Count; i++)
+                    {
+                        PropertyDescriptor prop = props[i];
+                        table.Columns.Add(prop.Name, prop.PropertyType);
+                    }
+                    object[] values = new object[props.Count];
+                    foreach (T item in data)
+                    {
+                        for (int i = 0; i < values.Length; i++)
+                        {
+                            values[i] = props[i].GetValue(item);
+                        }
+                        table.Rows.Add(values);
+                    }
+                    return table;
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Data conversion error->json to Datatable :" + ex.Message);
+                }
+            }
+        }
+        
+public void BulkInsert(DataTable dt)
+    {
+        try
+        {
+           System.Data.SqlClient.SqlBulkCopy objbulk = new System.Data.SqlClient.SqlBulkCopy(sqlConn);
+            //assigning Destination table name  
+            objbulk.DestinationTableName = "tablename";
+            //Mapping Table column  
+            objbulk.ColumnMappings.Add("columnname", "columninlist");
+            //inserting bulk Records into DataBase   
+            objbulk.WriteToServer(dt);           
+        }
+        catch (SqlException ex)
+        {
+            throw new Exception("Sql Bulk Insert-Sql exception:" + ex.Message + "\nInner Ex:" + ex.InnerException + "\nStackTrace:" + ex.StackTrace);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("Sql Bulk Insert-Exception:" + ex.Message + "\nInner Ex:" + ex.InnerException + "\nStackTrace:" + ex.StackTrace);
+        }
+    }
