@@ -1,0 +1,11 @@
+ string Data=@"ywyerw r78ewr7 r78ew6r78we re7r 78e7rre rr 
+               7egrhgjhjrv erg hvrhqv rgr bhrbv r \n hbwerhew8 er  r 8 r  r rr";
+                   
+                    using (FileStream fs = File.Create("D:\\demo.txt"))
+                    {
+                        byte[] info =
+                            new System.Text.UTF8Encoding(true).GetBytes(
+                            Data);
+                        fs.Write(info, 0, info.Length);
+                        fs.Close();
+                    }
